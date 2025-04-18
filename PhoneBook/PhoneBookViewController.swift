@@ -71,6 +71,13 @@ extension PhoneBookViewController {
     private func setupUI() {
         view.backgroundColor = .white
         
+        title = "연락처 추가"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "저장",
+            style: .plain,
+            target: self,
+            action: #selector(saveButtonTapped))
+        
         [imageView, randomImageButton, nameTextField, numberTextField]
             .forEach { view.addSubview($0) }
         
@@ -95,6 +102,10 @@ extension PhoneBookViewController {
             $0.top.equalTo(nameTextField.snp.bottom).offset(10)
             $0.leading.trailing.height.equalTo(nameTextField)
         }
+        
+    }
+    
+    @objc func saveButtonTapped(_ sender: UIBarButtonItem) {
         
     }
     
