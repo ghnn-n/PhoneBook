@@ -17,7 +17,7 @@ class TableViewCell: UITableViewCell {
         image.contentMode = .scaleAspectFit
         image.backgroundColor = .white
         image.layer.borderWidth = 3
-        image.layer.borderColor = CGColor(red: 0.7, green: 0.7, blue: 0.7, alpha: 1)
+        image.layer.borderColor = UIColor.lightGray.cgColor
         image.layer.cornerRadius = 30
         
         return image

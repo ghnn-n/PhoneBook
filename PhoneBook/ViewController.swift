@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+// MARK: - ViewController
 class ViewController: UIViewController {
     
     private let titleLabel: UILabel = {
@@ -38,6 +39,11 @@ class ViewController: UIViewController {
         return tableView
     }()
     
+}
+
+// MARK: - Lifecycle
+extension ViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -45,7 +51,13 @@ class ViewController: UIViewController {
         setupUI()
     }
     
+}
+
+// MARK: - Method
+extension ViewController {
     func setupUI() {
+        view.backgroundColor = .white
+        
         [titleLabel, addButton, tableView].forEach { view.addSubview($0) }
         
         titleLabel.snp.makeConstraints {
@@ -66,21 +78,28 @@ class ViewController: UIViewController {
     }
     
     @objc func addButtonTapped(_ sender: UIButton) {
-        
+        navigationController?.pushViewController(PhoneBookViewController(), animated: true)
     }
 }
 
+// MARK: - TableViewDelegate
 extension ViewController: UITableViewDelegate {
+    
+    // 셀 높이
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         80
     }
 }
 
+// MARK: - TableViewDataSource
 extension ViewController: UITableViewDataSource {
+    
+    // 셀 개수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 10
     }
     
+    // 셀 내용
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.id, for: indexPath) as? TableViewCell else { return UITableViewCell() }
         
