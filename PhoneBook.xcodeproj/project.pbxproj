@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9352A24A2DB1DB5A00326F94 /* PhoneBook+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9352A2482DB1DB5A00326F94 /* PhoneBook+CoreDataClass.swift */; };
 		9352A24B2DB1DB5A00326F94 /* PhoneBook+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9352A2492DB1DB5A00326F94 /* PhoneBook+CoreDataProperties.swift */; };
+		9352A26E2DB1EC9600326F94 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9352A26D2DB1EC9600326F94 /* SnapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9352A26E2DB1EC9600326F94 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,6 +89,7 @@
 			);
 			name = PhoneBook;
 			packageProductDependencies = (
+				9352A26D2DB1EC9600326F94 /* SnapKit */,
 			);
 			productName = PhoneBook;
 			productReference = 9352A22D2DB1D7DC00326F94 /* PhoneBook.app */;
@@ -116,6 +119,9 @@
 			);
 			mainGroup = 9352A2242DB1D7DC00326F94;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9352A26C2DB1EC9600326F94 /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9352A22E2DB1D7DC00326F94 /* Products */;
 			projectDirPath = "";
@@ -346,6 +352,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9352A26C2DB1EC9600326F94 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9352A26D2DB1EC9600326F94 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9352A26C2DB1EC9600326F94 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9352A2252DB1D7DC00326F94 /* Project object */;
 }
