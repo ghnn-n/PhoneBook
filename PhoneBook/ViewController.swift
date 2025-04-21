@@ -52,6 +52,7 @@ extension ViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        // CoreData
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         self.container = appDelegate.persistentContainer
         
@@ -67,18 +68,23 @@ extension ViewController {
 // MARK: - Method
 extension ViewController {
     
+    // PhoneBook Fetch
     private func fetchPhoneBook() {
         do {
+            
+            // 이름순으로 정렬하기 위해 SortDescriptor 사용
             let fetchRequest = PhoneBook.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: PhoneBook.Key.name, ascending: true)]
             
             self.phoneBook = try container.viewContext.fetch(fetchRequest)
             self.tableView.reloadData()
+            
         } catch {
             print("PhoneBook fetch failed \(error)")
         }
     }
     
+    // View 세팅 메서드
     private func setupUI() {
         view.backgroundColor = .white
         
@@ -101,10 +107,14 @@ extension ViewController {
         }
     }
     
+    // 추가 버튼 클릭
     @objc func addButtonTapped(_ sender: UIButton) {
+        
+        // 추가이기 때문에 수정할 내역이 없음을 알려줌
         PhoneBookViewController.willFetch = nil
         self.navigationController?.pushViewController(PhoneBookViewController(), animated: true)
     }
+    
 }
 
 // MARK: - TableViewDelegate
@@ -115,7 +125,10 @@ extension ViewController: UITableViewDelegate {
         80
     }
     
+    // 셀 선택 시
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        // 수정할 내용을 PhoneBookViewController에 전송하고 navigationController push메서드 사용
         PhoneBookViewController.willFetch = phoneBook[indexPath.row]
         self.navigationController?.pushViewController(PhoneBookViewController(), animated: true)
     }

@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+// MARK: - TableViewCell
 class TableViewCell: UITableViewCell {
     
     static let id = "TableViewCell"
@@ -46,6 +47,7 @@ class TableViewCell: UITableViewCell {
         setupUI()
     }
     
+    // 셀 재사용 방지
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -54,6 +56,7 @@ class TableViewCell: UITableViewCell {
         image.image = nil
     }
     
+    // UI 세팅 메서드
     private func setupUI() {
         [image, nameLabel, numberLabel].forEach { contentView.addSubview($0) }
         

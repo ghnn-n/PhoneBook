@@ -9,11 +9,15 @@ import UIKit
 import SnapKit
 import CoreData
 
+// MARK: - PhoneBookViewController
 class PhoneBookViewController: UIViewController {
     
+    var container = NSPersistentContainer(name: PhoneBook.id)
+    
+    // URL로 이미지를 불러오면 담아둘 변수
     var imageData = Data()
     
-    var container = NSPersistentContainer(name: PhoneBook.id)
+    // ViewController에서 보낼 데이터를 받을 변수
     static var willFetch: PhoneBook?
     
     private let imageView: UIImageView = {
@@ -70,6 +74,7 @@ extension PhoneBookViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // CoreData
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         self.container = appDelegate.persistentContainer
         
@@ -80,33 +85,46 @@ extension PhoneBookViewController {
 // MARK: - Method
 extension PhoneBookViewController {
     
+    // 랜덤 이미지 생성 버튼 클릭
     @objc func randomButtonTapped(_ sender: UIButton) {
         getImage()
     }
     
+    // 저장 버튼 클릭
     @objc func saveButtonTapped(_ sender: UIBarButtonItem) {
+        
+        // ViewController에서 보낸 값이 있을 경우
         if let _ = PhoneBookViewController.willFetch {
+            
+            // 수정 메서드 호출
             updatePhoneBook()
-        } else {
+            
+            
+        } else {    // 없을 경우
+            
+            // 생성 메서드 호출
             createPhoneBook()
+            
         }
         
         self.navigationController?.popViewController(animated: true)
     }
     
+    // 연락처를 생성하는 메서드
     private func createPhoneBook() {
         guard let entity = NSEntityDescription.entity(forEntityName: PhoneBook.id, in: self.container.viewContext) else { return }
         
         let newPhoneBook = NSManagedObject(entity: entity, insertInto: self.container.viewContext)
         
+        // 연락처가 고유 id를 갖도록 하기 위해 NSSortDescriptor 사용
         let fetchRequest = PhoneBook.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: PhoneBook.Key.id, ascending: false)]
-        fetchRequest.fetchLimit = 1
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: PhoneBook.Key.id, ascending: false)]  // false는 내림차순
+        fetchRequest.fetchLimit = 1 // 생성할 최대 데이터 개수
         
         if let lastCount = try? self.container.viewContext.fetch(fetchRequest).first {
-            newPhoneBook.setValue(lastCount.id + 1, forKey: PhoneBook.Key.id)
+            newPhoneBook.setValue(lastCount.id + 1, forKey: PhoneBook.Key.id)   // 가장 큰 id에 1을 더한 값을 id로 지정
         } else {
-            newPhoneBook.setValue(1, forKey: PhoneBook.Key.id)
+            newPhoneBook.setValue(1, forKey: PhoneBook.Key.id)  // 없을 경우 1로 지정
         }
         
         newPhoneBook.setValue(nameTextField.text, forKey: PhoneBook.Key.name)
@@ -120,10 +138,14 @@ extension PhoneBookViewController {
         }
     }
     
+    // 연락처를 업데이트(수정)하는 메서드
     private func updatePhoneBook() {
+        
+        // 해당 연락처의 id를 불러오기 위해 옵셔널 바인딩
         guard let fetchPhoneBook = PhoneBookViewController.willFetch else { return }
         
         let fetchRequest = PhoneBook.fetchRequest()
+        // 해당 연락처의 id를 불러옴
         fetchRequest.predicate = NSPredicate(format: "id == %d", fetchPhoneBook.id)
         
         do {
@@ -141,31 +163,22 @@ extension PhoneBookViewController {
         }
     }
     
+    // API를 이용해 이미지를 불러오는 메서드
     private func getImage() {
         let randomNumber = Int.random(in: 1...1000)
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon-form/\(String(randomNumber))") else {
             print("API URL is invalid")
             return
         }
-
-        print("url: \(url)")
         
-        let urlRequest = URLRequest(url: url)
-        
-        URLSession.shared.dataTask(with: urlRequest) { data, response, error in
-            
-            if let error = error {
-                print("Error code: \(error.localizedDescription)")
-             }
+        URLSession.shared.dataTask(with: URLRequest(url: url)) { data, response, error in
             
             guard let data, error == nil else {
                 print("Data load failed")
                 return
             }
             
-            let successRange = 200..<300
-            
-            guard let response = response as? HTTPURLResponse, successRange.contains(response.statusCode) else {
+            guard let response = response as? HTTPURLResponse, (200..<300).contains(response.statusCode) else {
                 print("No response")
                 return
             }
@@ -190,6 +203,7 @@ extension PhoneBookViewController {
                 return
             }
             
+            // 이미지를 PhoneBook에 저장하기 위해 데이터를 기록
             self.imageData = imageData
             
             DispatchQueue.main.async {
@@ -202,9 +216,12 @@ extension PhoneBookViewController {
         
     }
     
+    
+    // View 세팅
     private func setupUI() {
         view.backgroundColor = .white
         
+        // ViewController에서 데이터를 보냈을 경우
         if let data = PhoneBookViewController.willFetch {
             self.title = "연락처 수정"
             print(data.id)
