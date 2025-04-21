@@ -16,10 +16,10 @@ extension PhoneBook {
         return NSFetchRequest<PhoneBook>(entityName: "PhoneBook")
     }
 
-    @NSManaged public var id: Float
+    @NSManaged public var id: Int16
     @NSManaged public var name: String?
     @NSManaged public var phoneNumber: String?
-    @NSManaged public var image: String?
+    @NSManaged public var image: Data?
 
 }
 
