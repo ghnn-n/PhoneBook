@@ -99,7 +99,11 @@ extension PhoneBookViewController {
         
         let newPhoneBook = NSManagedObject(entity: entity, insertInto: self.container.viewContext)
         
-        if let lastCount = try? self.container.viewContext.fetch(PhoneBook.fetchRequest()).sorted(by: { $0.id < $1.id }).last {
+        let fetchRequest = PhoneBook.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: PhoneBook.Key.id, ascending: false)]
+        fetchRequest.fetchLimit = 1
+        
+        if let lastCount = try? self.container.viewContext.fetch(fetchRequest).first {
             newPhoneBook.setValue(lastCount.id + 1, forKey: PhoneBook.Key.id)
         } else {
             newPhoneBook.setValue(1, forKey: PhoneBook.Key.id)
