@@ -69,8 +69,10 @@ extension ViewController {
     
     private func fetchPhoneBook() {
         do {
-            self.phoneBook = try container.viewContext.fetch(PhoneBook.fetchRequest())
-            self.phoneBook = self.phoneBook.sorted(by: { $0.name ?? "" < $1.name ?? "" })
+            let fetchRequest = PhoneBook.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: PhoneBook.Key.name, ascending: true)]
+            
+            self.phoneBook = try container.viewContext.fetch(fetchRequest)
             self.tableView.reloadData()
         } catch {
             print("PhoneBook fetch failed \(error)")
