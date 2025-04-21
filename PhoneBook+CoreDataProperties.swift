@@ -19,6 +19,7 @@ extension PhoneBook {
     @NSManaged public var id: Float
     @NSManaged public var name: String?
     @NSManaged public var phoneNumber: String?
+    @NSManaged public var image: String?
 
 }
 
