@@ -144,15 +144,12 @@ extension PhoneBookViewController {
      */
     
     private func getImage() {
-//        let randomNumber = Int.random(in: 1...1000)
-//        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon-form/\(String(randomNumber))") else {
-//            print("API URL is invalid")
-//            return
-//        }
-        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon-form/150") else {
+        let randomNumber = Int.random(in: 1...1000)
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon-form/\(String(randomNumber))") else {
             print("API URL is invalid")
             return
         }
+
         print("url: \(url)")
         
         let urlRequest = URLRequest(url: url)
