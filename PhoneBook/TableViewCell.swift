@@ -19,6 +19,7 @@ class TableViewCell: UITableViewCell {
         image.layer.borderWidth = 3
         image.layer.borderColor = UIColor.lightGray.cgColor
         image.layer.cornerRadius = 30
+        image.layer.masksToBounds = true
         
         return image
     }()
