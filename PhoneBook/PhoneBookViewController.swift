@@ -20,6 +20,7 @@ class PhoneBookViewController: UIViewController {
         let image = UIImageView()
         image.contentMode = .scaleAspectFit
         image.layer.cornerRadius = 100
+        image.layer.masksToBounds = true
         image.layer.borderWidth = 5
         image.layer.borderColor = UIColor.lightGray.cgColor
         
