@@ -46,6 +46,14 @@ class TableViewCell: UITableViewCell {
         setupUI()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        nameLabel.text = nil
+        numberLabel.text = nil
+        image.image = nil
+    }
+    
     private func setupUI() {
         [image, nameLabel, numberLabel].forEach { contentView.addSubview($0) }
         
