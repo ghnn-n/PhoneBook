@@ -2,7 +2,7 @@
 //  PhoneBook+CoreDataProperties.swift
 //  PhoneBook
 //
-//  Created by 최규현 on 4/18/25.
+//  Created by 최규현 on 4/21/25.
 //
 //
 
@@ -16,8 +16,8 @@ extension PhoneBook {
         return NSFetchRequest<PhoneBook>(entityName: "PhoneBook")
     }
 
-    @NSManaged public var id: String?
-    @NSManaged public var name: Int32
+    @NSManaged public var id: Float
+    @NSManaged public var name: String?
     @NSManaged public var phoneNumber: String?
 
 }

@@ -20,11 +20,12 @@ class PhoneBookViewController: UIViewController {
         return image
     }()
     
-    private let randomImageButton: UIButton = {
+    private lazy var randomImageButton: UIButton = {
         let button = UIButton()
         button.setTitle("랜덤 이미지 생성", for: .normal)
         button.setTitleColor(.lightGray, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 12)
+        button.addTarget(self, action: #selector(randomButtonTapped), for: .touchUpInside)
         
         return button
     }()
@@ -63,11 +64,147 @@ extension PhoneBookViewController {
         super.viewDidLoad()
         
         setupUI()
+        getImage()
     }
 }
 
 // MARK: - Method
 extension PhoneBookViewController {
+    
+    @objc func randomButtonTapped(_ sender: UIButton) {
+        getImage()
+    }
+    
+    /*
+    private func fetchPokemonAPI(url: URL, completion: @escaping (PokeImageURL?) -> Void) {
+
+        let session = URLSession(configuration: .default)
+
+        session.dataTask(with: URLRequest(url: url)) { data, response, error in
+
+            guard let data, error == nil else {
+                print("data load failed")
+                completion(nil)
+                return
+            }
+
+            let successRange = 200..<300
+
+            guard let response = response as? HTTPURLResponse, successRange.contains(response.statusCode) else {
+                print("response error")
+                completion(nil)
+                return
+            }
+
+            guard let decodedData = try? JSONDecoder().decode(PokeImageURL.self, from: data) else {
+                print("decode error")
+                completion(nil)
+                return
+            }
+
+            completion(decodedData)
+
+        }.resume()
+    }
+    
+    private func getImageData() {
+        let randomNumber = Int.random(in: 1...1000)
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon-form/" + String(randomNumber)) else {
+            print("Invalid URL")
+            return
+        }
+
+        fetchPokemonAPI(url: url) { [weak self] (result: PokeImageURL?) in
+
+            guard let self, let result else {
+                print("not result")
+                return
+            }
+
+            guard let imageURL = URL(string: result.sprites.frontDefault) else {
+                print("imageURL error")
+                return
+            }
+
+            guard let imageData = try? Data(contentsOf: imageURL) else {
+                print("imageData error")
+                return
+            }
+
+            guard let image = UIImage(data: imageData) else {
+                print("image error")
+                return
+            }
+
+            DispatchQueue.main.async {
+                self.imageView.image = image
+            }
+        }
+    }
+     */
+    
+    private func getImage() {
+//        let randomNumber = Int.random(in: 1...1000)
+//        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon-form/\(String(randomNumber))") else {
+//            print("API URL is invalid")
+//            return
+//        }
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon-form/150") else {
+            print("API URL is invalid")
+            return
+        }
+        print("url: \(url)")
+        
+        let urlRequest = URLRequest(url: url)
+        
+        URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+            
+            if let error = error {
+                print("Error code: \(error.localizedDescription)")
+             }
+            
+            guard let data, error == nil else {
+                print("Data load failed")
+                return
+            }
+            
+            let successRange = 200..<300
+            
+            guard let response = response as? HTTPURLResponse, successRange.contains(response.statusCode) else {
+                print("No response")
+                return
+            }
+            
+            guard let decodedData = try? JSONDecoder().decode(PokeImageURL.self, from: data) else {
+                print("Decoding failed")
+                return
+            }
+            
+            guard let imageURL = URL(string: decodedData.sprites.frontDefault) else {
+                print("imageURL failed")
+                return
+            }
+            
+            guard let imageData = try? Data(contentsOf: imageURL) else {
+                print("imageData failed")
+                return
+            }
+            
+            guard let image = UIImage(data: imageData) else {
+                print("image failed")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.imageView.image = image
+            }
+            
+            
+        }.resume()
+        
+        
+    }
+    
     private func setupUI() {
         view.backgroundColor = .white
         
@@ -106,9 +243,7 @@ extension PhoneBookViewController {
     }
     
     @objc func saveButtonTapped(_ sender: UIBarButtonItem) {
-        
+        print("저장 버튼 클릭")
     }
     
 }
-
-#Preview { PhoneBookViewController() }
