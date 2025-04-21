@@ -7,9 +7,13 @@
 
 import UIKit
 import SnapKit
+import CoreData
 
 // MARK: - ViewController
 class ViewController: UIViewController {
+    
+    var container = NSPersistentContainer(name: PhoneBook.id)
+    var phoneBook: [PhoneBook] = []
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -48,14 +52,31 @@ extension ViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        self.container = appDelegate.persistentContainer
+        
         setupUI()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        fetchPhoneBook()
     }
     
 }
 
 // MARK: - Method
 extension ViewController {
-    func setupUI() {
+    
+    private func fetchPhoneBook() {
+        do {
+            self.phoneBook = try container.viewContext.fetch(PhoneBook.fetchRequest())
+            self.tableView.reloadData()
+        } catch {
+            print("PhoneBook fetch failed \(error)")
+        }
+    }
+    
+    private func setupUI() {
         view.backgroundColor = .white
         
         [titleLabel, addButton, tableView].forEach { view.addSubview($0) }
@@ -78,7 +99,8 @@ extension ViewController {
     }
     
     @objc func addButtonTapped(_ sender: UIButton) {
-        navigationController?.pushViewController(PhoneBookViewController(), animated: true)
+        PhoneBookViewController.willFetch = nil
+        self.navigationController?.pushViewController(PhoneBookViewController(), animated: true)
     }
 }
 
@@ -89,6 +111,11 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         80
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        PhoneBookViewController.willFetch = phoneBook[indexPath.row]
+        self.navigationController?.pushViewController(PhoneBookViewController(), animated: true)
+    }
 }
 
 // MARK: - TableViewDataSource
@@ -96,20 +123,21 @@ extension ViewController: UITableViewDataSource {
     
     // 셀 개수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return phoneBook.count
     }
     
     // 셀 내용
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.id, for: indexPath) as? TableViewCell else { return UITableViewCell() }
         
-        cell.nameLabel.text = "name"
-        cell.numberLabel.text = "010-0000-0000"
+        cell.nameLabel.text = phoneBook[indexPath.row].name
+        cell.numberLabel.text = phoneBook[indexPath.row].phoneNumber
+        if let imageData = phoneBook[indexPath.row].image {
+            cell.image.image = UIImage(data: imageData)
+        }
         
         return cell
     }
     
     
 }
-
-#Preview{ ViewController() }

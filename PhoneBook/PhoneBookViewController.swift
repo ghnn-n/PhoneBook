@@ -7,8 +7,14 @@
 
 import UIKit
 import SnapKit
+import CoreData
 
 class PhoneBookViewController: UIViewController {
+    
+    var imageData = Data()
+    
+    var container = NSPersistentContainer(name: PhoneBook.id)
+    public static var willFetch: PhoneBook?
     
     private let imageView: UIImageView = {
         let image = UIImageView()
@@ -63,8 +69,10 @@ extension PhoneBookViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        self.container = appDelegate.persistentContainer
+        
         setupUI()
-        getImage()
     }
 }
 
@@ -75,6 +83,167 @@ extension PhoneBookViewController {
         getImage()
     }
     
+    @objc func saveButtonTapped(_ sender: UIBarButtonItem) {
+        if let _ = PhoneBookViewController.willFetch {
+            updatePhoneBook()
+        } else {
+            createPhoneBook()
+        }
+        
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    private func createPhoneBook() {
+        guard let entity = NSEntityDescription.entity(forEntityName: PhoneBook.id, in: self.container.viewContext) else { return }
+        let count = try? self.container.viewContext.count(for: PhoneBook.fetchRequest())
+        
+        let newPhoneBook = NSManagedObject(entity: entity, insertInto: self.container.viewContext)
+        
+        newPhoneBook.setValue(count, forKey: PhoneBook.Key.id)
+        newPhoneBook.setValue(nameTextField.text, forKey: PhoneBook.Key.name)
+        newPhoneBook.setValue(numberTextField.text, forKey: PhoneBook.Key.phoneNumber)
+        newPhoneBook.setValue(imageData, forKey: PhoneBook.Key.image)
+        
+        do {
+            try self.container.viewContext.save()
+        } catch {
+            print("저장 실패")
+        }
+    }
+    
+    private func updatePhoneBook() {
+        guard let fetchPhoneBook = PhoneBookViewController.willFetch else { return }
+        
+        let fetchRequest = PhoneBook.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %d", fetchPhoneBook.id)
+        
+        do {
+            let result = try self.container.viewContext.fetch(fetchRequest)
+            for data in result as [NSManagedObject] {
+                data.setValue(nameTextField.text, forKey: PhoneBook.Key.name)
+                data.setValue(numberTextField.text, forKey: PhoneBook.Key.phoneNumber)
+                data.setValue(imageData, forKey: PhoneBook.Key.image)
+            }
+            
+            try self.container.viewContext.save()
+            
+        } catch {
+            print("수정 실패")
+        }
+    }
+    
+    private func getImage() {
+        let randomNumber = Int.random(in: 1...1000)
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon-form/\(String(randomNumber))") else {
+            print("API URL is invalid")
+            return
+        }
+
+        print("url: \(url)")
+        
+        let urlRequest = URLRequest(url: url)
+        
+        URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+            
+            if let error = error {
+                print("Error code: \(error.localizedDescription)")
+             }
+            
+            guard let data, error == nil else {
+                print("Data load failed")
+                return
+            }
+            
+            let successRange = 200..<300
+            
+            guard let response = response as? HTTPURLResponse, successRange.contains(response.statusCode) else {
+                print("No response")
+                return
+            }
+            
+            guard let decodedData = try? JSONDecoder().decode(PokeImageURL.self, from: data) else {
+                print("Decoding failed")
+                return
+            }
+            
+            guard let imageURL = URL(string: decodedData.sprites.frontDefault) else {
+                print("imageURL failed")
+                return
+            }
+            
+            guard let imageData = try? Data(contentsOf: imageURL) else {
+                print("imageData failed")
+                return
+            }
+            
+            guard let image = UIImage(data: imageData) else {
+                print("image failed")
+                return
+            }
+            
+            self.imageData = imageData
+            
+            DispatchQueue.main.async {
+                self.imageView.image = image
+            }
+            
+            
+        }.resume()
+        
+        
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = .white
+        
+        if let data = PhoneBookViewController.willFetch {
+            self.title = "연락처 수정"
+            
+            nameTextField.text = data.name
+            numberTextField.text = data.phoneNumber
+            
+            if let fetchImage = data.image {
+                imageView.image = UIImage(data: fetchImage)
+                imageData = fetchImage
+            }
+        } else {
+            title = "연락처 추가"
+        }
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "저장",
+            style: .plain,
+            target: self,
+            action: #selector(saveButtonTapped))
+        
+        [imageView, randomImageButton, nameTextField, numberTextField]
+            .forEach { view.addSubview($0) }
+        
+        imageView.snp.makeConstraints {
+            $0.width.height.equalTo(200)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(30)
+            $0.centerX.equalToSuperview()
+        }
+        
+        randomImageButton.snp.makeConstraints {
+            $0.top.equalTo(imageView.snp.bottom).offset(16)
+            $0.centerX.equalToSuperview()
+        }
+        
+        nameTextField.snp.makeConstraints {
+            $0.height.equalTo(40)
+            $0.top.equalTo(randomImageButton.snp.bottom).offset(30)
+            $0.leading.trailing.equalToSuperview().inset(20)
+        }
+        
+        numberTextField.snp.makeConstraints {
+            $0.top.equalTo(nameTextField.snp.bottom).offset(10)
+            $0.leading.trailing.height.equalTo(nameTextField)
+        }
+        
+    }
+
+    // 재활용 가능하도록 작성한 버전
     /*
     private func fetchPokemonAPI(url: URL, completion: @escaping (PokeImageURL?) -> Void) {
 
@@ -143,104 +312,5 @@ extension PhoneBookViewController {
     }
      */
     
-    private func getImage() {
-        let randomNumber = Int.random(in: 1...1000)
-        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon-form/\(String(randomNumber))") else {
-            print("API URL is invalid")
-            return
-        }
 
-        print("url: \(url)")
-        
-        let urlRequest = URLRequest(url: url)
-        
-        URLSession.shared.dataTask(with: urlRequest) { data, response, error in
-            
-            if let error = error {
-                print("Error code: \(error.localizedDescription)")
-             }
-            
-            guard let data, error == nil else {
-                print("Data load failed")
-                return
-            }
-            
-            let successRange = 200..<300
-            
-            guard let response = response as? HTTPURLResponse, successRange.contains(response.statusCode) else {
-                print("No response")
-                return
-            }
-            
-            guard let decodedData = try? JSONDecoder().decode(PokeImageURL.self, from: data) else {
-                print("Decoding failed")
-                return
-            }
-            
-            guard let imageURL = URL(string: decodedData.sprites.frontDefault) else {
-                print("imageURL failed")
-                return
-            }
-            
-            guard let imageData = try? Data(contentsOf: imageURL) else {
-                print("imageData failed")
-                return
-            }
-            
-            guard let image = UIImage(data: imageData) else {
-                print("image failed")
-                return
-            }
-            
-            DispatchQueue.main.async {
-                self.imageView.image = image
-            }
-            
-            
-        }.resume()
-        
-        
-    }
-    
-    private func setupUI() {
-        view.backgroundColor = .white
-        
-        title = "연락처 추가"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: "저장",
-            style: .plain,
-            target: self,
-            action: #selector(saveButtonTapped))
-        
-        [imageView, randomImageButton, nameTextField, numberTextField]
-            .forEach { view.addSubview($0) }
-        
-        imageView.snp.makeConstraints {
-            $0.width.height.equalTo(200)
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(30)
-            $0.centerX.equalToSuperview()
-        }
-        
-        randomImageButton.snp.makeConstraints {
-            $0.top.equalTo(imageView.snp.bottom).offset(16)
-            $0.centerX.equalToSuperview()
-        }
-        
-        nameTextField.snp.makeConstraints {
-            $0.height.equalTo(40)
-            $0.top.equalTo(randomImageButton.snp.bottom).offset(30)
-            $0.leading.trailing.equalToSuperview().inset(20)
-        }
-        
-        numberTextField.snp.makeConstraints {
-            $0.top.equalTo(nameTextField.snp.bottom).offset(10)
-            $0.leading.trailing.height.equalTo(nameTextField)
-        }
-        
-    }
-    
-    @objc func saveButtonTapped(_ sender: UIBarButtonItem) {
-        print("저장 버튼 클릭")
-    }
-    
 }
