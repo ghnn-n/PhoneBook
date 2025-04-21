@@ -14,7 +14,7 @@ class PhoneBookViewController: UIViewController {
     var imageData = Data()
     
     var container = NSPersistentContainer(name: PhoneBook.id)
-    public static var willFetch: PhoneBook?
+    static var willFetch: PhoneBook?
     
     private let imageView: UIImageView = {
         let image = UIImageView()
@@ -96,11 +96,15 @@ extension PhoneBookViewController {
     
     private func createPhoneBook() {
         guard let entity = NSEntityDescription.entity(forEntityName: PhoneBook.id, in: self.container.viewContext) else { return }
-        let count = try? self.container.viewContext.count(for: PhoneBook.fetchRequest())
         
         let newPhoneBook = NSManagedObject(entity: entity, insertInto: self.container.viewContext)
         
-        newPhoneBook.setValue(count, forKey: PhoneBook.Key.id)
+        if let lastCount = try? self.container.viewContext.fetch(PhoneBook.fetchRequest()).sorted(by: { $0.id < $1.id }).last {
+            newPhoneBook.setValue(lastCount.id + 1, forKey: PhoneBook.Key.id)
+        } else {
+            newPhoneBook.setValue(1, forKey: PhoneBook.Key.id)
+        }
+        
         newPhoneBook.setValue(nameTextField.text, forKey: PhoneBook.Key.name)
         newPhoneBook.setValue(numberTextField.text, forKey: PhoneBook.Key.phoneNumber)
         newPhoneBook.setValue(imageData, forKey: PhoneBook.Key.image)
@@ -199,6 +203,7 @@ extension PhoneBookViewController {
         
         if let data = PhoneBookViewController.willFetch {
             self.title = "연락처 수정"
+            print(data.id)
             
             nameTextField.text = data.name
             numberTextField.text = data.phoneNumber
