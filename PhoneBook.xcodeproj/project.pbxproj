@@ -7,15 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9352A24A2DB1DB5A00326F94 /* PhoneBook+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9352A2482DB1DB5A00326F94 /* PhoneBook+CoreDataClass.swift */; };
-		9352A24B2DB1DB5A00326F94 /* PhoneBook+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9352A2492DB1DB5A00326F94 /* PhoneBook+CoreDataProperties.swift */; };
 		9352A26E2DB1EC9600326F94 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9352A26D2DB1EC9600326F94 /* SnapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9352A22D2DB1D7DC00326F94 /* PhoneBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhoneBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		9352A2482DB1DB5A00326F94 /* PhoneBook+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhoneBook+CoreDataClass.swift"; sourceTree = "<group>"; };
-		9352A2492DB1DB5A00326F94 /* PhoneBook+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PhoneBook+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -54,8 +50,6 @@
 		9352A2242DB1D7DC00326F94 = {
 			isa = PBXGroup;
 			children = (
-				9352A2482DB1DB5A00326F94 /* PhoneBook+CoreDataClass.swift */,
-				9352A2492DB1DB5A00326F94 /* PhoneBook+CoreDataProperties.swift */,
 				9352A22F2DB1D7DC00326F94 /* PhoneBook */,
 				9352A22E2DB1D7DC00326F94 /* Products */,
 			);
@@ -147,8 +141,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9352A24A2DB1DB5A00326F94 /* PhoneBook+CoreDataClass.swift in Sources */,
-				9352A24B2DB1DB5A00326F94 /* PhoneBook+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

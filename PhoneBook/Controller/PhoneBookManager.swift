@@ -53,7 +53,7 @@ class PhoneBookManager {
     func updatePhoneBook(name: String, phoneNumber: String, image: Data?) {
         
         // 해당 연락처의 id를 불러오기 위해 옵셔널 바인딩
-        guard let fetchPhoneBook = PhoneBookViewController.willFetch else { return }
+        guard let fetchPhoneBook = AddViewController.willFetch else { return }
         
         let fetchRequest = PhoneBook.fetchRequest()
         // 해당 연락처의 id를 불러옴
