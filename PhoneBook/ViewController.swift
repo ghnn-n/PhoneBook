@@ -14,25 +14,6 @@ class ViewController: UIViewController {
     
     let phoneBookManager = PhoneBookManager()
     
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "친구 목록"
-        label.textAlignment = .center
-        label.font = .systemFont(ofSize: 20, weight: .bold)
-        
-        return label
-    }()
-    
-    private lazy var addButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("추가", for: .normal)
-        button.setTitleColor(.gray, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20)
-        button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
-        
-        return button
-    }()
-    
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.dataSource = self
@@ -68,27 +49,19 @@ extension ViewController {
     private func setupUI() {
         view.backgroundColor = .white
         
-        [titleLabel, addButton, tableView].forEach { view.addSubview($0) }
+        self.title = "친구 목록"
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(addButtonTapped))
         
-        titleLabel.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).inset(20)
-            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-        }
-        
-        addButton.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.top)
-            $0.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
-            $0.height.equalTo(titleLabel.snp.height)
-        }
+        view.addSubview(tableView)
         
         tableView.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(20)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(20)
             $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
     // 추가 버튼 클릭
-    @objc func addButtonTapped(_ sender: UIButton) {
+    @objc func addButtonTapped(_ sender: UIBarButtonItem) {
         
         // 추가이기 때문에 수정할 내역이 없음을 알려줌
         PhoneBookViewController.willFetch = nil
