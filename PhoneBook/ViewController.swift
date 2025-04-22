@@ -12,8 +12,8 @@ import CoreData
 // MARK: - ViewController
 class ViewController: UIViewController {
     
-    var container = NSPersistentContainer(name: PhoneBook.id)
-    var phoneBook: [PhoneBook] = []
+//    var container = NSPersistentContainer(name: PhoneBook.id)
+    let phoneBookManager = PhoneBookManager()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -53,14 +53,15 @@ extension ViewController {
         // Do any additional setup after loading the view.
         
         // CoreData
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        self.container = appDelegate.persistentContainer
+//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//        self.container = appDelegate.persistentContainer
         
         setupUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        fetchPhoneBook()
+        phoneBookManager.fetchPhoneBook()
+        self.tableView.reloadData()
     }
     
 }
@@ -68,21 +69,21 @@ extension ViewController {
 // MARK: - Method
 extension ViewController {
     
-    // PhoneBook Fetch
-    private func fetchPhoneBook() {
-        do {
-            
-            // 이름순으로 정렬하기 위해 SortDescriptor 사용
-            let fetchRequest = PhoneBook.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: PhoneBook.Key.name, ascending: true)]
-            
-            self.phoneBook = try container.viewContext.fetch(fetchRequest)
-            self.tableView.reloadData()
-            
-        } catch {
-            print("PhoneBook fetch failed \(error)")
-        }
-    }
+//    // PhoneBook Fetch
+//    private func fetchPhoneBook() {
+//        do {
+//            
+//            // 이름순으로 정렬하기 위해 SortDescriptor 사용
+//            let fetchRequest = PhoneBook.fetchRequest()
+//            fetchRequest.sortDescriptors = [NSSortDescriptor(key: PhoneBook.Key.name, ascending: true)]
+//            
+//            self.phoneBook = try container.viewContext.fetch(fetchRequest)
+//            self.tableView.reloadData()
+//            
+//        } catch {
+//            print("PhoneBook fetch failed \(error)")
+//        }
+//    }
     
     // View 세팅 메서드
     private func setupUI() {
@@ -129,7 +130,7 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         // 수정할 내용을 PhoneBookViewController에 전송하고 navigationController push메서드 사용
-        PhoneBookViewController.willFetch = phoneBook[indexPath.row]
+        PhoneBookViewController.willFetch = phoneBookManager.phoneBook[indexPath.row]
         self.navigationController?.pushViewController(PhoneBookViewController(), animated: true)
     }
 }
@@ -139,16 +140,16 @@ extension ViewController: UITableViewDataSource {
     
     // 셀 개수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return phoneBook.count
+        return phoneBookManager.phoneBook.count
     }
     
     // 셀 내용
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.id, for: indexPath) as? TableViewCell else { return UITableViewCell() }
         
-        cell.nameLabel.text = phoneBook[indexPath.row].name
-        cell.numberLabel.text = phoneBook[indexPath.row].phoneNumber
-        if let imageData = phoneBook[indexPath.row].image {
+        cell.nameLabel.text = phoneBookManager.phoneBook[indexPath.row].name
+        cell.numberLabel.text = phoneBookManager.phoneBook[indexPath.row].phoneNumber
+        if let imageData = phoneBookManager.phoneBook[indexPath.row].image {
             cell.image.image = UIImage(data: imageData)
         }
         
