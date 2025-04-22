@@ -10,7 +10,7 @@ import SnapKit
 import CoreData
 
 // MARK: - ViewController
-class ViewController: UIViewController {
+class MainViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -45,7 +45,7 @@ class ViewController: UIViewController {
 }
 
 // MARK: - Lifecycle
-extension ViewController {
+extension MainViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,7 +63,7 @@ extension ViewController {
 }
 
 // MARK: - Method
-extension ViewController {
+extension MainViewController {
     
     // View 세팅 메서드
     private func setupUI() {
@@ -92,14 +92,14 @@ extension ViewController {
     @objc func addButtonTapped(_ sender: UIButton) {
         
         // 추가이기 때문에 수정할 내역이 없음을 알려줌
-        PhoneBookViewController.willFetch = nil
-        self.navigationController?.pushViewController(PhoneBookViewController(), animated: true)
+        AddViewController.willFetch = nil
+        self.navigationController?.pushViewController(AddViewController(), animated: true)
     }
     
 }
 
 // MARK: - TableViewDelegate
-extension ViewController: UITableViewDelegate {
+extension MainViewController: UITableViewDelegate {
     
     // 셀 높이
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -110,13 +110,13 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         // 수정할 내용을 PhoneBookViewController에 전송하고 navigationController push메서드 사용
-        PhoneBookViewController.willFetch = phoneBookManager.phoneBook[indexPath.row]
-        self.navigationController?.pushViewController(PhoneBookViewController(), animated: true)
+        AddViewController.willFetch = phoneBookManager.phoneBook[indexPath.row]
+        self.navigationController?.pushViewController(AddViewController(), animated: true)
     }
 }
 
 // MARK: - TableViewDataSource
-extension ViewController: UITableViewDataSource {
+extension MainViewController: UITableViewDataSource {
     
     // 셀 개수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

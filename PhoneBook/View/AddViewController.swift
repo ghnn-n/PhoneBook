@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 import CoreData
 
-// MARK: - PhoneBookViewController
-class PhoneBookViewController: UIViewController {
+// MARK: - AddViewController
+class AddViewController: UIViewController {
     
     let phoneBookManager = PhoneBookManager()
     
@@ -70,7 +70,7 @@ class PhoneBookViewController: UIViewController {
 }
 
 // MARK: - Lifecycle
-extension PhoneBookViewController {
+extension AddViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -83,7 +83,7 @@ extension PhoneBookViewController {
 }
 
 // MARK: - Method
-extension PhoneBookViewController {
+extension AddViewController {
     
     // 랜덤 이미지 생성 버튼 클릭
     @objc func randomButtonTapped(_ sender: UIButton) {
@@ -94,7 +94,7 @@ extension PhoneBookViewController {
     @objc func saveButtonTapped(_ sender: UIBarButtonItem) {
         
         // ViewController에서 보낸 값이 있을 경우
-        if let _ = PhoneBookViewController.willFetch {
+        if let _ = AddViewController.willFetch {
             
             // 수정 메서드 호출
             phoneBookManager.updatePhoneBook(name: nameTextField.text ?? "", phoneNumber: numberTextField.text ?? "", image: imageData)
@@ -169,7 +169,7 @@ extension PhoneBookViewController {
         view.backgroundColor = .white
         
         // ViewController에서 데이터를 보냈을 경우
-        if let data = PhoneBookViewController.willFetch {
+        if let data = AddViewController.willFetch {
             self.title = "연락처 수정"
             print(data.id)
             
