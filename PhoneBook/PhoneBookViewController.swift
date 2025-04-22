@@ -76,6 +76,10 @@ extension PhoneBookViewController {
         
         setupUI()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = false
+    }
 }
 
 // MARK: - Method
