@@ -29,6 +29,11 @@
 
 ---
 
+## 🔫 Trouble Shooting
+- https://ghnn.tistory.com/68
+
+---
+
 ## 📋 커밋 컨벤션 (PR 시 동일하게 적용)
 - Commit Message 규칙
   - 💡 [Issue 종류] #Issue 번호 - 한 줄 정리
