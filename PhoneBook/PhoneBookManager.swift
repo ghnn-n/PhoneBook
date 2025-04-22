@@ -8,6 +8,7 @@
 import CoreData
 import UIKit
 
+// MARK: - PhoneBook CoreData를 관리하는 클래스
 class PhoneBookManager {
     
     private var container = NSPersistentContainer(name: PhoneBook.id)
