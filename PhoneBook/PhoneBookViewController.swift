@@ -12,8 +12,6 @@ import CoreData
 // MARK: - PhoneBookViewController
 class PhoneBookViewController: UIViewController {
     
-//    var container = NSPersistentContainer(name: PhoneBook.id)
-    
     let phoneBookManager = PhoneBookManager()
     
     // URL로 이미지를 불러오면 담아둘 변수
@@ -76,10 +74,6 @@ extension PhoneBookViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // CoreData
-//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-//        self.container = appDelegate.persistentContainer
-        
         setupUI()
     }
 }
@@ -111,59 +105,6 @@ extension PhoneBookViewController {
         
         self.navigationController?.popViewController(animated: true)
     }
-    
-//    // 연락처를 생성하는 메서드
-//    private func createPhoneBook() {
-//        guard let entity = NSEntityDescription.entity(forEntityName: PhoneBook.id, in: self.container.viewContext) else { return }
-//        
-//        let newPhoneBook = NSManagedObject(entity: entity, insertInto: self.container.viewContext)
-//        
-//        // 연락처가 고유 id를 갖도록 하기 위해 NSSortDescriptor 사용
-//        let fetchRequest = PhoneBook.fetchRequest()
-//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: PhoneBook.Key.id, ascending: false)]  // false는 내림차순
-//        fetchRequest.fetchLimit = 1 // 생성할 최대 데이터 개수
-//        
-//        if let lastCount = try? self.container.viewContext.fetch(fetchRequest).first {
-//            newPhoneBook.setValue(lastCount.id + 1, forKey: PhoneBook.Key.id)   // 가장 큰 id에 1을 더한 값을 id로 지정
-//        } else {
-//            newPhoneBook.setValue(1, forKey: PhoneBook.Key.id)  // 없을 경우 1로 지정
-//        }
-//        
-//        newPhoneBook.setValue(nameTextField.text, forKey: PhoneBook.Key.name)
-//        newPhoneBook.setValue(numberTextField.text, forKey: PhoneBook.Key.phoneNumber)
-//        newPhoneBook.setValue(imageData, forKey: PhoneBook.Key.image)
-//        
-//        do {
-//            try self.container.viewContext.save()
-//        } catch {
-//            print("저장 실패")
-//        }
-//    }
-//    
-//    // 연락처를 업데이트(수정)하는 메서드
-//    private func updatePhoneBook() {
-//        
-//        // 해당 연락처의 id를 불러오기 위해 옵셔널 바인딩
-//        guard let fetchPhoneBook = PhoneBookViewController.willFetch else { return }
-//        
-//        let fetchRequest = PhoneBook.fetchRequest()
-//        // 해당 연락처의 id를 불러옴
-//        fetchRequest.predicate = NSPredicate(format: "id == %d", fetchPhoneBook.id)
-//        
-//        do {
-//            let result = try self.container.viewContext.fetch(fetchRequest)
-//            for data in result as [NSManagedObject] {
-//                data.setValue(nameTextField.text, forKey: PhoneBook.Key.name)
-//                data.setValue(numberTextField.text, forKey: PhoneBook.Key.phoneNumber)
-//                data.setValue(imageData, forKey: PhoneBook.Key.image)
-//            }
-//            
-//            try self.container.viewContext.save()
-//            
-//        } catch {
-//            print("수정 실패")
-//        }
-//    }
     
     // API를 이용해 이미지를 불러오는 메서드
     private func getImage() {

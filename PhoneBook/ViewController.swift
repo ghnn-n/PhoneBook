@@ -12,7 +12,6 @@ import CoreData
 // MARK: - ViewController
 class ViewController: UIViewController {
     
-//    var container = NSPersistentContainer(name: PhoneBook.id)
     let phoneBookManager = PhoneBookManager()
     
     private let titleLabel: UILabel = {
@@ -52,10 +51,6 @@ extension ViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        // CoreData
-//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-//        self.container = appDelegate.persistentContainer
-        
         setupUI()
     }
     
@@ -68,22 +63,6 @@ extension ViewController {
 
 // MARK: - Method
 extension ViewController {
-    
-//    // PhoneBook Fetch
-//    private func fetchPhoneBook() {
-//        do {
-//            
-//            // 이름순으로 정렬하기 위해 SortDescriptor 사용
-//            let fetchRequest = PhoneBook.fetchRequest()
-//            fetchRequest.sortDescriptors = [NSSortDescriptor(key: PhoneBook.Key.name, ascending: true)]
-//            
-//            self.phoneBook = try container.viewContext.fetch(fetchRequest)
-//            self.tableView.reloadData()
-//            
-//        } catch {
-//            print("PhoneBook fetch failed \(error)")
-//        }
-//    }
     
     // View 세팅 메서드
     private func setupUI() {
