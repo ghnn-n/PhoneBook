@@ -136,5 +136,21 @@ extension MainViewController: UITableViewDataSource {
         return cell
     }
     
+    // 스와이프 액션
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let delete = UIContextualAction(style: .normal, title: "") { (_, _, success: @escaping (Bool) -> Void) in
+            
+            self.phoneBookManager.deletePhoneBook(id: self.phoneBookManager.phoneBook[indexPath.row].id)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            success(true)
+
+        }
+        
+        delete.backgroundColor = .red
+        delete.image = UIImage(systemName: "trash.fill")
+        
+        return UISwipeActionsConfiguration(actions: [delete])
+    }
     
 }

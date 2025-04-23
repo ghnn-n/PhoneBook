@@ -21,7 +21,7 @@ class PhoneBookManager {
         self.container = appDelegate.persistentContainer
     }
     
-    // 연락처를 생성하는 메서드
+    // 연락처를 생성하는 메서드(C)
     func createPhoneBook(name: String, phoneNumber: String, image: Data?) {
         guard let entity = NSEntityDescription.entity(forEntityName: PhoneBook.id, in: self.container.viewContext) else { return }
         
@@ -49,7 +49,7 @@ class PhoneBookManager {
         }
     }
     
-    // 연락처를 업데이트(수정)하는 메서드
+    // 연락처를 업데이트(수정)하는 메서드(U)
     func updatePhoneBook(name: String, phoneNumber: String, image: Data?) {
         
         // 해당 연락처의 id를 불러오기 위해 옵셔널 바인딩
@@ -74,7 +74,7 @@ class PhoneBookManager {
         }
     }
     
-    // PhoneBook Fetch
+    // 연락처를 불러오는 메서드(R)
     func fetchPhoneBook() {
         do {
             
@@ -86,6 +86,27 @@ class PhoneBookManager {
             
         } catch {
             print("PhoneBook fetch failed \(error)")
+        }
+    }
+    
+    // 연락처를 삭제하는 메서드(D)
+    func deletePhoneBook(id: Int16) {
+        
+        let fetchRequest = PhoneBook.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %d", id)
+        
+        do {
+            let result = try self.container.viewContext.fetch(fetchRequest)
+            
+            for data in result as [NSManagedObject] {
+                self.container.viewContext.delete(data)
+            }
+            
+            try self.container.viewContext.save()
+            fetchPhoneBook()
+            
+        } catch {
+            print("Data delete failed: \(error)")
         }
     }
     
